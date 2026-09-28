@@ -1,0 +1,64 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10131d">
+    <meta name="description" content="A tiny arcade challenge: catch the bugs before time runs out.">
+    <title>Bug Hunt — DOM Arcade</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js" defer></script>
+  </head>
+  <body>
+    <main class="arcade" id="game">
+      <header class="topbar">
+        <a class="wordmark" href="#game" aria-label="Bug Hunt home"><span class="wordmark-mark" aria-hidden="true">✳</span> DOM ARCADE</a>
+        <span class="topbar-status"><span class="status-dot" aria-hidden="true"></span> SYSTEM ONLINE</span>
+      </header>
+
+      <section class="game-shell" aria-labelledby="game-title">
+        <div class="game-heading">
+          <p class="eyebrow"><span>ARCADE / 001</span><span>FIELD REPORT</span></p>
+          <h1 id="game-title">Bug <span>Hunt</span></h1>
+          <p class="intro">A rogue bug is loose in the grid. Catch as many as you can before it escapes.</p>
+        </div>
+
+        <div class="dashboard" aria-label="Game statistics">
+          <div class="stat">
+            <span class="stat-label">BUGS CAUGHT</span>
+            <span class="stat-value" id="score">00</span>
+          </div>
+          <div class="stat timer-stat">
+            <span class="stat-label">TIME LEFT</span>
+            <span class="stat-value"><span id="timer">30</span><span class="stat-unit">SEC</span></span>
+          </div>
+          <div class="round-indicator" aria-hidden="true"><span class="round-dot"></span> ROUND 01</div>
+        </div>
+
+        <div class="board-wrap">
+          <div class="board-topline"><span>SECTOR GRID</span><span id="game-hint">STANDBY</span></div>
+          <div class="board" id="board" role="group" aria-label="Bug hunt grid">
+            <button class="cell" type="button" data-cell="0" aria-label="Row 1, column 1" disabled><span class="cell-index">01</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="1" aria-label="Row 1, column 2" disabled><span class="cell-index">02</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="2" aria-label="Row 1, column 3" disabled><span class="cell-index">03</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="3" aria-label="Row 2, column 1" disabled><span class="cell-index">04</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="4" aria-label="Row 2, column 2" disabled><span class="cell-index">05</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="5" aria-label="Row 2, column 3" disabled><span class="cell-index">06</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="6" aria-label="Row 3, column 1" disabled><span class="cell-index">07</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="7" aria-label="Row 3, column 2" disabled><span class="cell-index">08</span><span class="cell-content" aria-hidden="true"></span></button>
+            <button class="cell" type="button" data-cell="8" aria-label="Row 3, column 3" disabled><span class="cell-index">09</span><span class="cell-content" aria-hidden="true"></span></button>
+          </div>
+          <p class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></p>
+        </div>
+
+        <div class="game-footer">
+          <div class="instructions"><span class="keycap">↑</span><span class="keycap">↓</span><span class="keycap">←</span><span class="keycap">→</span><span class="key-plus">+</span><span class="keycap keycap-wide">ENTER</span><span class="instruction-copy">to catch</span></div>
+          <button class="start-button" id="start-button" type="button"><span class="button-icon" aria-hidden="true">▶</span> START GAME</button>
+        </div>
+        <p class="result" id="result" role="status" hidden></p>
+      </section>
+
+      <footer class="page-footer"><span>KEEP YOUR EYES ON THE GRID</span><span>BUILT WITH HTML · CSS · JS</span></footer>
+    </main>
+  </body>
+</html>
