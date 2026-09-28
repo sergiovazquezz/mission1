@@ -1,15 +1,19 @@
 const ROUND_SECONDS = 30;
+const CATCHES_PER_ROUND = 5;
 const BUGS = ['🐛', '🪲', '🐞'];
 
 const cells = Array.from(document.querySelectorAll('.cell'));
 const scoreDisplay = document.querySelector('#score');
 const timerDisplay = document.querySelector('#timer');
+const roundDisplay = document.querySelector('#round-number');
 const startButton = document.querySelector('#start-button');
 const hintDisplay = document.querySelector('#game-hint');
 const resultDisplay = document.querySelector('#result');
 const announcer = document.querySelector('#announcer');
 
 let score = 0;
+let roundNumber = 1;
+let catchesTowardNextRound = 0;
 let secondsLeft = ROUND_SECONDS;
 let activeCell = -1;
 let previousCell = -1;
@@ -19,6 +23,10 @@ let timerId;
 
 function formatScore(value) {
   return String(value).padStart(2, '0');
+}
+
+function updateRoundDisplay() {
+  roundDisplay.textContent = formatScore(roundNumber);
 }
 
 function clearBug() {
@@ -69,11 +77,14 @@ function endGame() {
 function startGame() {
   window.clearInterval(timerId);
   score = 0;
+  roundNumber = 1;
+  catchesTowardNextRound = 0;
   secondsLeft = ROUND_SECONDS;
   previousCell = -1;
   selectedCell = 4;
   gameState = 'playing';
   scoreDisplay.textContent = formatScore(score);
+  updateRoundDisplay();
   timerDisplay.textContent = String(secondsLeft);
   hintDisplay.textContent = 'BUG DETECTED';
   resultDisplay.hidden = true;
@@ -110,10 +121,18 @@ function catchBug(index) {
   }
 
   score += 1;
+  catchesTowardNextRound += 1;
   scoreDisplay.textContent = formatScore(score);
   cells[index].classList.add('is-hit');
   window.setTimeout(() => cells[index].classList.remove('is-hit'), 230);
-  announcer.textContent = `Bug caught! Score ${score}.`;
+  if (catchesTowardNextRound === CATCHES_PER_ROUND) {
+    roundNumber += 1;
+    catchesTowardNextRound = 0;
+    updateRoundDisplay();
+    announcer.textContent = `Round ${roundNumber}. Five more bugs to advance.`;
+  } else {
+    announcer.textContent = `Bug caught! Score ${score}. ${CATCHES_PER_ROUND - catchesTowardNextRound} more ${CATCHES_PER_ROUND - catchesTowardNextRound === 1 ? 'catch' : 'catches'} to advance.`;
+  }
   showBug();
 }
 
