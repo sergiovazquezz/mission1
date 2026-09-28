@@ -94,7 +94,21 @@ function startGame() {
 }
 
 function catchBug(index) {
-  if (gameState !== 'playing' || index !== activeCell) return;
+  if (gameState !== 'playing') return;
+  if (index !== activeCell) {
+    const lostPoint = score > 0;
+    score = Math.max(0, score - 1);
+    secondsLeft = Math.max(0, secondsLeft - 2);
+    scoreDisplay.textContent = formatScore(score);
+    timerDisplay.textContent = String(secondsLeft);
+    cells[index].classList.add('is-miss');
+    window.setTimeout(() => cells[index].classList.remove('is-miss'), 280);
+    const pointMessage = lostPoint ? 'One point lost.' : 'Score stays at zero.';
+    announcer.textContent = `Wrong box. ${pointMessage} Two seconds lost. ${secondsLeft} seconds left.`;
+    if (secondsLeft === 0) endGame();
+    return;
+  }
+
   score += 1;
   scoreDisplay.textContent = formatScore(score);
   cells[index].classList.add('is-hit');
@@ -139,6 +153,7 @@ document.addEventListener('keydown', (event) => {
   if (event.key === 'Enter' || event.key === ' ') {
     if (cells.includes(document.activeElement)) {
       event.preventDefault();
+      if (event.repeat) return;
       catchBug(selectedCell);
     }
   }
