@@ -7,6 +7,7 @@
   --muted: #929bb1;
   --paper: #f1f2fb;
   --lime: #d5f36a;
+  --selection: #8ab4ff;
   --pink: #ff7891;
   --mono: 'SFMono-Regular', Consolas, 'Liberation Mono', monospace;
   --sans: 'Avenir Next', Avenir, ui-sans-serif, system-ui, sans-serif;
@@ -86,7 +87,8 @@ h1 span { color: var(--lime); }
 .cell:disabled { opacity: 1; }
 .cell:not(:disabled) { cursor: crosshair; }
 .cell:not(:disabled):hover { border-color: #596178; background: #232a3b; }
-.cell:focus-visible { outline: 2px solid var(--lime); outline-offset: 2px; z-index: 1; }
+.cell.is-selected::before { border-color: var(--selection); box-shadow: inset 0 0 0 1px #8ab4ff30; }
+.cell.is-selected .cell-index { color: var(--selection); }
 .cell-index { position: absolute; top: 11px; left: 12px; color: #69738a; font: 10px/1 var(--mono); }
 .cell.is-active { border-color: var(--lime); background: linear-gradient(145deg, #303a2b, #202a25); box-shadow: inset 0 0 24px #d5f36a12, 0 0 14px #d5f36a14; }
 .cell.is-active .cell-index { color: #c8e97a; }

@@ -47,6 +47,7 @@ function restoreCellLabels() {
 function updateSelection() {
   cells.forEach((cell, index) => {
     cell.tabIndex = index === selectedCell ? 0 : -1;
+    cell.classList.toggle('is-selected', index === selectedCell);
   });
 }
 
@@ -104,7 +105,11 @@ function catchBug(index) {
 
 cells.forEach((cell, index) => {
   cell.dataset.label = `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`;
-  cell.addEventListener('click', () => catchBug(index));
+  cell.addEventListener('click', () => {
+    selectedCell = index;
+    updateSelection();
+    catchBug(index);
+  });
   cell.addEventListener('focus', () => {
     selectedCell = index;
     updateSelection();
