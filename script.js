@@ -147,10 +147,8 @@ function catchBug(index) {
 
 cells.forEach((cell, index) => {
     cell.dataset.label = `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`;
-    cell.addEventListener("click", () => {
-        selectedCell = index;
-        updateSelection();
-        catchBug(index);
+    cell.addEventListener("pointerdown", (event) => {
+        event.preventDefault();
     });
     cell.addEventListener("focus", () => {
         selectedCell = index;
