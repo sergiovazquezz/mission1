@@ -101,7 +101,6 @@ h1 span { color: var(--lime); }
 .start-button { min-height: 43px; padding: 0 17px; border: 0; border-radius: 5px; background: var(--lime); color: #1b2010; font: 500 11px/1 var(--mono); letter-spacing: .04em; cursor: pointer; transition: transform .15s ease, background .15s ease; }
 .start-button:hover { background: #e3ff83; transform: translateY(-1px); }
 .start-button:focus-visible { outline: 2px solid var(--paper); outline-offset: 3px; }
-.button-icon { margin-right: 7px; font-size: 9px; }
 .result { margin: 13px 0 0; text-align: center; color: var(--lime); font: 12px/1.5 var(--mono); }
 .result[hidden] { display: none; }
 .page-footer { min-height: 56px; color: #69738a; font-size: 9px; border-top: 1px solid #ffffff0d; }

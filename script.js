@@ -7,6 +7,7 @@ const scoreDisplay = document.querySelector("#score");
 const timerDisplay = document.querySelector("#timer");
 const roundDisplay = document.querySelector("#round-number");
 const startButton = document.querySelector("#start-button");
+const startButtonLabel = startButton.querySelector(".button-label");
 const hintDisplay = document.querySelector("#game-hint");
 const resultDisplay = document.querySelector("#result");
 const announcer = document.querySelector("#announcer");
@@ -74,7 +75,7 @@ function endGame() {
     });
     startButton.disabled = false;
     hintDisplay.textContent = "ROUND OVER";
-    startButton.innerHTML = '<span class="button-icon" aria-hidden="true">↻</span> PLAY AGAIN';
+    startButtonLabel.textContent = "PLAY AGAIN";
     resultDisplay.textContent = `TIME! You caught ${score} ${score === 1 ? "bug" : "bugs"}. Ready for another round?`;
     resultDisplay.hidden = false;
     announcer.textContent = `Time is up. You caught ${score} ${score === 1 ? "bug" : "bugs"}.`;
@@ -96,7 +97,7 @@ function startGame() {
     hintDisplay.textContent = "BUG DETECTED";
     resultDisplay.hidden = true;
     announcer.textContent = "Round started. Catch the bug!";
-    startButton.innerHTML = '<span class="button-icon" aria-hidden="true">●</span> GAME RUNNING';
+    startButtonLabel.textContent = "GAME RUNNING";
     startButton.disabled = true;
     cells.forEach((cell) => {
         cell.disabled = false;
