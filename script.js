@@ -35,14 +35,17 @@ function clearBug() {
         cell.classList.remove("is-active");
         cell.querySelector(".cell-content").textContent = "";
     });
+
     activeCell = -1;
 }
 
 function showBug() {
     clearBug();
+
     const choices = cells.map((_, index) => index).filter((index) => index !== previousCell);
     activeCell = choices[Math.floor(Math.random() * choices.length)];
     previousCell = activeCell;
+
     const cell = cells[activeCell];
     cell.querySelector(".cell-content").textContent = BUGS[Math.floor(Math.random() * BUGS.length)];
     cell.classList.add("is-active");
@@ -68,22 +71,27 @@ function updateSelection() {
 function endGame() {
     window.clearInterval(timerId);
     gameState = "ended";
+
     clearBug();
     restoreCellLabels();
+
     cells.forEach((cell) => {
         cell.disabled = true;
     });
+
     startButton.disabled = false;
     hintDisplay.textContent = "ROUND OVER";
     startButtonLabel.textContent = "PLAY AGAIN";
     resultDisplay.textContent = `TIME! You caught ${score} ${score === 1 ? "bug" : "bugs"}. Ready for another round?`;
     resultDisplay.hidden = false;
     announcer.textContent = `Time is up. You caught ${score} ${score === 1 ? "bug" : "bugs"}.`;
+
     startButton.focus();
 }
 
 function startGame() {
     window.clearInterval(timerId);
+
     score = 0;
     roundNumber = 1;
     catchesTowardNextRound = 0;
@@ -91,17 +99,22 @@ function startGame() {
     previousCell = -1;
     selectedCell = 4;
     gameState = "playing";
+
     scoreDisplay.textContent = formatScore(score);
+
     updateRoundDisplay();
+
     timerDisplay.textContent = String(secondsLeft);
     hintDisplay.textContent = "BUG DETECTED";
     resultDisplay.hidden = true;
     announcer.textContent = "Round started. Catch the bug!";
     startButtonLabel.textContent = "GAME RUNNING";
     startButton.disabled = true;
+
     cells.forEach((cell) => {
         cell.disabled = false;
     });
+
     updateSelection();
     showBug();
     cells[selectedCell].focus();
@@ -115,18 +128,28 @@ function startGame() {
 }
 
 function catchBug(index) {
-    if (gameState !== "playing") return;
+    if (gameState !== "playing") {
+        return;
+    }
+
     if (index !== activeCell) {
         const lostPoint = score > 0;
         score = Math.max(0, score - 1);
+
         secondsLeft = Math.max(0, secondsLeft - 2);
         scoreDisplay.textContent = formatScore(score);
         timerDisplay.textContent = String(secondsLeft);
+
         cells[index].classList.add("is-miss");
         window.setTimeout(() => cells[index].classList.remove("is-miss"), 280);
+
         const pointMessage = lostPoint ? "One point lost." : "Score stays at zero.";
         announcer.textContent = `Wrong box. ${pointMessage} Two seconds lost. ${secondsLeft} seconds left.`;
-        if (secondsLeft === 0) endGame();
+
+        if (secondsLeft === 0) {
+            endGame();
+        }
+
         return;
     }
 
@@ -135,6 +158,7 @@ function catchBug(index) {
     scoreDisplay.textContent = formatScore(score);
     cells[index].classList.add("is-hit");
     window.setTimeout(() => cells[index].classList.remove("is-hit"), 230);
+
     if (catchesTowardNextRound === CATCHES_PER_ROUND) {
         roundNumber += 1;
         catchesTowardNextRound = 0;
@@ -163,8 +187,10 @@ document.addEventListener("keydown", (event) => {
     if (
         gameState !== "playing" ||
         !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].includes(event.key)
-    )
+    ) {
         return;
+    }
+
     const moves = {
         ArrowUp: selectedCell - 3,
         ArrowDown: selectedCell + 3,
