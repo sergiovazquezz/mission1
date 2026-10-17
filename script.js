@@ -1,15 +1,15 @@
 const ROUND_SECONDS = 30;
 const CATCHES_PER_ROUND = 5;
-const BUGS = ['🐛', '🪲', '🐞'];
+const BUGS = ["🐛", "🪲", "🐞"];
 
-const cells = Array.from(document.querySelectorAll('.cell'));
-const scoreDisplay = document.querySelector('#score');
-const timerDisplay = document.querySelector('#timer');
-const roundDisplay = document.querySelector('#round-number');
-const startButton = document.querySelector('#start-button');
-const hintDisplay = document.querySelector('#game-hint');
-const resultDisplay = document.querySelector('#result');
-const announcer = document.querySelector('#announcer');
+const cells = Array.from(document.querySelectorAll(".cell"));
+const scoreDisplay = document.querySelector("#score");
+const timerDisplay = document.querySelector("#timer");
+const roundDisplay = document.querySelector("#round-number");
+const startButton = document.querySelector("#start-button");
+const hintDisplay = document.querySelector("#game-hint");
+const resultDisplay = document.querySelector("#result");
+const announcer = document.querySelector("#announcer");
 
 let score = 0;
 let roundNumber = 1;
@@ -18,162 +18,177 @@ let secondsLeft = ROUND_SECONDS;
 let activeCell = -1;
 let previousCell = -1;
 let selectedCell = 4;
-let gameState = 'ready';
+let gameState = "ready";
 let timerId;
 
 function formatScore(value) {
-  return String(value).padStart(2, '0');
+    return String(value).padStart(2, "0");
 }
 
 function updateRoundDisplay() {
-  roundDisplay.textContent = formatScore(roundNumber);
+    roundDisplay.textContent = formatScore(roundNumber);
 }
 
 function clearBug() {
-  cells.forEach((cell) => {
-    cell.classList.remove('is-active');
-    cell.querySelector('.cell-content').textContent = '';
-  });
-  activeCell = -1;
+    cells.forEach((cell) => {
+        cell.classList.remove("is-active");
+        cell.querySelector(".cell-content").textContent = "";
+    });
+    activeCell = -1;
 }
 
 function showBug() {
-  clearBug();
-  const choices = cells.map((_, index) => index).filter((index) => index !== previousCell);
-  activeCell = choices[Math.floor(Math.random() * choices.length)];
-  previousCell = activeCell;
-  const cell = cells[activeCell];
-  cell.querySelector('.cell-content').textContent = BUGS[Math.floor(Math.random() * BUGS.length)];
-  cell.classList.add('is-active');
-  cell.setAttribute('aria-label', `${cell.dataset.label} — bug!`);
+    clearBug();
+    const choices = cells.map((_, index) => index).filter((index) => index !== previousCell);
+    activeCell = choices[Math.floor(Math.random() * choices.length)];
+    previousCell = activeCell;
+    const cell = cells[activeCell];
+    cell.querySelector(".cell-content").textContent = BUGS[Math.floor(Math.random() * BUGS.length)];
+    cell.classList.add("is-active");
+    cell.setAttribute("aria-label", `${cell.dataset.label} — bug!`);
 }
 
 function restoreCellLabels() {
-  cells.forEach((cell, index) => cell.setAttribute('aria-label', `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`));
+    cells.forEach((cell, index) =>
+        cell.setAttribute(
+            "aria-label",
+            `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`
+        )
+    );
 }
 
 function updateSelection() {
-  cells.forEach((cell, index) => {
-    cell.tabIndex = index === selectedCell ? 0 : -1;
-    cell.classList.toggle('is-selected', index === selectedCell);
-  });
+    cells.forEach((cell, index) => {
+        cell.tabIndex = index === selectedCell ? 0 : -1;
+        cell.classList.toggle("is-selected", index === selectedCell);
+    });
 }
 
 function endGame() {
-  window.clearInterval(timerId);
-  gameState = 'ended';
-  clearBug();
-  restoreCellLabels();
-  cells.forEach((cell) => { cell.disabled = true; });
-  startButton.disabled = false;
-  hintDisplay.textContent = 'ROUND OVER';
-  startButton.innerHTML = '<span class="button-icon" aria-hidden="true">↻</span> PLAY AGAIN';
-  resultDisplay.textContent = `TIME! You caught ${score} ${score === 1 ? 'bug' : 'bugs'}. Ready for another round?`;
-  resultDisplay.hidden = false;
-  announcer.textContent = `Time is up. You caught ${score} ${score === 1 ? 'bug' : 'bugs'}.`;
-  startButton.focus();
+    window.clearInterval(timerId);
+    gameState = "ended";
+    clearBug();
+    restoreCellLabels();
+    cells.forEach((cell) => {
+        cell.disabled = true;
+    });
+    startButton.disabled = false;
+    hintDisplay.textContent = "ROUND OVER";
+    startButton.innerHTML = '<span class="button-icon" aria-hidden="true">↻</span> PLAY AGAIN';
+    resultDisplay.textContent = `TIME! You caught ${score} ${score === 1 ? "bug" : "bugs"}. Ready for another round?`;
+    resultDisplay.hidden = false;
+    announcer.textContent = `Time is up. You caught ${score} ${score === 1 ? "bug" : "bugs"}.`;
+    startButton.focus();
 }
 
 function startGame() {
-  window.clearInterval(timerId);
-  score = 0;
-  roundNumber = 1;
-  catchesTowardNextRound = 0;
-  secondsLeft = ROUND_SECONDS;
-  previousCell = -1;
-  selectedCell = 4;
-  gameState = 'playing';
-  scoreDisplay.textContent = formatScore(score);
-  updateRoundDisplay();
-  timerDisplay.textContent = String(secondsLeft);
-  hintDisplay.textContent = 'BUG DETECTED';
-  resultDisplay.hidden = true;
-  announcer.textContent = 'Round started. Catch the bug!';
-  startButton.innerHTML = '<span class="button-icon" aria-hidden="true">●</span> GAME RUNNING';
-  startButton.disabled = true;
-  cells.forEach((cell) => { cell.disabled = false; });
-  updateSelection();
-  showBug();
-  cells[selectedCell].focus();
-
-  timerId = window.setInterval(() => {
-    secondsLeft -= 1;
+    window.clearInterval(timerId);
+    score = 0;
+    roundNumber = 1;
+    catchesTowardNextRound = 0;
+    secondsLeft = ROUND_SECONDS;
+    previousCell = -1;
+    selectedCell = 4;
+    gameState = "playing";
+    scoreDisplay.textContent = formatScore(score);
+    updateRoundDisplay();
     timerDisplay.textContent = String(secondsLeft);
-    if (secondsLeft === 10) announcer.textContent = '10 seconds left!';
-    if (secondsLeft <= 0) endGame();
-  }, 1000);
+    hintDisplay.textContent = "BUG DETECTED";
+    resultDisplay.hidden = true;
+    announcer.textContent = "Round started. Catch the bug!";
+    startButton.innerHTML = '<span class="button-icon" aria-hidden="true">●</span> GAME RUNNING';
+    startButton.disabled = true;
+    cells.forEach((cell) => {
+        cell.disabled = false;
+    });
+    updateSelection();
+    showBug();
+    cells[selectedCell].focus();
+
+    timerId = window.setInterval(() => {
+        secondsLeft -= 1;
+        timerDisplay.textContent = String(secondsLeft);
+        if (secondsLeft === 10) announcer.textContent = "10 seconds left!";
+        if (secondsLeft <= 0) endGame();
+    }, 1000);
 }
 
 function catchBug(index) {
-  if (gameState !== 'playing') return;
-  if (index !== activeCell) {
-    const lostPoint = score > 0;
-    score = Math.max(0, score - 1);
-    secondsLeft = Math.max(0, secondsLeft - 2);
-    scoreDisplay.textContent = formatScore(score);
-    timerDisplay.textContent = String(secondsLeft);
-    cells[index].classList.add('is-miss');
-    window.setTimeout(() => cells[index].classList.remove('is-miss'), 280);
-    const pointMessage = lostPoint ? 'One point lost.' : 'Score stays at zero.';
-    announcer.textContent = `Wrong box. ${pointMessage} Two seconds lost. ${secondsLeft} seconds left.`;
-    if (secondsLeft === 0) endGame();
-    return;
-  }
+    if (gameState !== "playing") return;
+    if (index !== activeCell) {
+        const lostPoint = score > 0;
+        score = Math.max(0, score - 1);
+        secondsLeft = Math.max(0, secondsLeft - 2);
+        scoreDisplay.textContent = formatScore(score);
+        timerDisplay.textContent = String(secondsLeft);
+        cells[index].classList.add("is-miss");
+        window.setTimeout(() => cells[index].classList.remove("is-miss"), 280);
+        const pointMessage = lostPoint ? "One point lost." : "Score stays at zero.";
+        announcer.textContent = `Wrong box. ${pointMessage} Two seconds lost. ${secondsLeft} seconds left.`;
+        if (secondsLeft === 0) endGame();
+        return;
+    }
 
-  score += 1;
-  catchesTowardNextRound += 1;
-  scoreDisplay.textContent = formatScore(score);
-  cells[index].classList.add('is-hit');
-  window.setTimeout(() => cells[index].classList.remove('is-hit'), 230);
-  if (catchesTowardNextRound === CATCHES_PER_ROUND) {
-    roundNumber += 1;
-    catchesTowardNextRound = 0;
-    updateRoundDisplay();
-    announcer.textContent = `Round ${roundNumber}. Five more bugs to advance.`;
-  } else {
-    announcer.textContent = `Bug caught! Score ${score}. ${CATCHES_PER_ROUND - catchesTowardNextRound} more ${CATCHES_PER_ROUND - catchesTowardNextRound === 1 ? 'catch' : 'catches'} to advance.`;
-  }
-  showBug();
+    score += 1;
+    catchesTowardNextRound += 1;
+    scoreDisplay.textContent = formatScore(score);
+    cells[index].classList.add("is-hit");
+    window.setTimeout(() => cells[index].classList.remove("is-hit"), 230);
+    if (catchesTowardNextRound === CATCHES_PER_ROUND) {
+        roundNumber += 1;
+        catchesTowardNextRound = 0;
+        updateRoundDisplay();
+        announcer.textContent = `Round ${roundNumber}. Five more bugs to advance.`;
+    } else {
+        announcer.textContent = `Bug caught! Score ${score}. ${CATCHES_PER_ROUND - catchesTowardNextRound} more ${CATCHES_PER_ROUND - catchesTowardNextRound === 1 ? "catch" : "catches"} to advance.`;
+    }
+    showBug();
 }
 
 cells.forEach((cell, index) => {
-  cell.dataset.label = `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`;
-  cell.addEventListener('click', () => {
-    selectedCell = index;
-    updateSelection();
-    catchBug(index);
-  });
-  cell.addEventListener('focus', () => {
-    selectedCell = index;
-    updateSelection();
-  });
+    cell.dataset.label = `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`;
+    cell.addEventListener("click", () => {
+        selectedCell = index;
+        updateSelection();
+        catchBug(index);
+    });
+    cell.addEventListener("focus", () => {
+        selectedCell = index;
+        updateSelection();
+    });
 });
 
-startButton.addEventListener('click', startGame);
+startButton.addEventListener("click", startGame);
 
-document.addEventListener('keydown', (event) => {
-  if (gameState !== 'playing' || !['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Enter', ' '].includes(event.key)) return;
-  const moves = {
-    ArrowUp: selectedCell - 3,
-    ArrowDown: selectedCell + 3,
-    ArrowLeft: selectedCell - 1,
-    ArrowRight: selectedCell + 1,
-  };
+document.addEventListener("keydown", (event) => {
+    if (
+        gameState !== "playing" ||
+        !["ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "Enter", " "].includes(event.key)
+    )
+        return;
+    const moves = {
+        ArrowUp: selectedCell - 3,
+        ArrowDown: selectedCell + 3,
+        ArrowLeft: selectedCell - 1,
+        ArrowRight: selectedCell + 1,
+    };
 
-  if (event.key in moves) {
-    event.preventDefault();
-    const nextCell = moves[event.key];
-    const staysInBoard = nextCell >= 0 && nextCell < cells.length;
-    const staysInRow = !['ArrowLeft', 'ArrowRight'].includes(event.key) || Math.floor(nextCell / 3) === Math.floor(selectedCell / 3);
-    if (staysInBoard && staysInRow) cells[nextCell].focus();
-    return;
-  }
-
-  if (event.key === 'Enter' || event.key === ' ') {
-    if (cells.includes(document.activeElement)) {
-      event.preventDefault();
-      if (event.repeat) return;
-      catchBug(selectedCell);
+    if (event.key in moves) {
+        event.preventDefault();
+        const nextCell = moves[event.key];
+        const staysInBoard = nextCell >= 0 && nextCell < cells.length;
+        const staysInRow =
+            !["ArrowLeft", "ArrowRight"].includes(event.key) ||
+            Math.floor(nextCell / 3) === Math.floor(selectedCell / 3);
+        if (staysInBoard && staysInRow) cells[nextCell].focus();
+        return;
     }
-  }
+
+    if (event.key === "Enter" || event.key === " ") {
+        if (cells.includes(document.activeElement)) {
+            event.preventDefault();
+            if (event.repeat) return;
+            catchBug(selectedCell);
+        }
+    }
 });
