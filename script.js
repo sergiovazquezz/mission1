@@ -1,6 +1,9 @@
 const ROUND_SECONDS = 30;
 const CATCHES_PER_ROUND = 5;
 const BUGS = ["🐛", "🪲", "🐞"];
+const WRONG_BOX_SECONDS = 2;
+const GRID_COLUMNS = 3;
+const START_CELL = 4;
 
 const cells = Array.from(document.querySelectorAll(".cell"));
 const scoreDisplay = document.querySelector("#score");
@@ -18,7 +21,7 @@ let catchesTowardNextRound = 0;
 let secondsLeft = ROUND_SECONDS;
 let activeCell = -1;
 let previousCell = -1;
-let selectedCell = 4;
+let selectedCell = START_CELL;
 let gameState = "ready";
 let timerId;
 
@@ -31,6 +34,7 @@ function updateRoundDisplay() {
 }
 
 function clearBug() {
+    restoreCellLabels();
     cells.forEach((cell) => {
         cell.classList.remove("is-active");
         cell.querySelector(".cell-content").textContent = "";
@@ -53,12 +57,7 @@ function showBug() {
 }
 
 function restoreCellLabels() {
-    cells.forEach((cell, index) =>
-        cell.setAttribute(
-            "aria-label",
-            `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`
-        )
-    );
+    cells.forEach((cell) => cell.setAttribute("aria-label", cell.dataset.label));
 }
 
 function updateSelection() {
@@ -73,7 +72,6 @@ function endGame() {
     gameState = "ended";
 
     clearBug();
-    restoreCellLabels();
 
     cells.forEach((cell) => {
         cell.disabled = true;
@@ -97,7 +95,7 @@ function startGame() {
     catchesTowardNextRound = 0;
     secondsLeft = ROUND_SECONDS;
     previousCell = -1;
-    selectedCell = 4;
+    selectedCell = START_CELL;
     gameState = "playing";
 
     scoreDisplay.textContent = formatScore(score);
@@ -136,7 +134,7 @@ function catchBug(index) {
         const lostPoint = score > 0;
         score = Math.max(0, score - 1);
 
-        secondsLeft = Math.max(0, secondsLeft - 2);
+        secondsLeft = Math.max(0, secondsLeft - WRONG_BOX_SECONDS);
         scoreDisplay.textContent = formatScore(score);
         timerDisplay.textContent = String(secondsLeft);
 
@@ -144,7 +142,7 @@ function catchBug(index) {
         window.setTimeout(() => cells[index].classList.remove("is-miss"), 280);
 
         const pointMessage = lostPoint ? "One point lost." : "Score stays at zero.";
-        announcer.textContent = `Wrong box. ${pointMessage} Two seconds lost. ${secondsLeft} seconds left.`;
+        announcer.textContent = `Wrong box. ${pointMessage} ${WRONG_BOX_SECONDS} ${WRONG_BOX_SECONDS === 1 ? "second" : "seconds"} lost. ${secondsLeft} seconds left.`;
 
         if (secondsLeft === 0) {
             endGame();
@@ -163,7 +161,7 @@ function catchBug(index) {
         roundNumber += 1;
         catchesTowardNextRound = 0;
         updateRoundDisplay();
-        announcer.textContent = `Round ${roundNumber}. Five more bugs to advance.`;
+        announcer.textContent = `Round ${roundNumber}. ${CATCHES_PER_ROUND} more ${CATCHES_PER_ROUND === 1 ? "bug" : "bugs"} to advance.`;
     } else {
         announcer.textContent = `Bug caught! Score ${score}. ${CATCHES_PER_ROUND - catchesTowardNextRound} more ${CATCHES_PER_ROUND - catchesTowardNextRound === 1 ? "catch" : "catches"} to advance.`;
     }
@@ -171,7 +169,7 @@ function catchBug(index) {
 }
 
 cells.forEach((cell, index) => {
-    cell.dataset.label = `Row ${Math.floor(index / 3) + 1}, column ${(index % 3) + 1}`;
+    cell.dataset.label = `Row ${Math.floor(index / GRID_COLUMNS) + 1}, column ${(index % GRID_COLUMNS) + 1}`;
     cell.addEventListener("pointerdown", (event) => {
         event.preventDefault();
     });
@@ -192,8 +190,8 @@ document.addEventListener("keydown", (event) => {
     }
 
     const moves = {
-        ArrowUp: selectedCell - 3,
-        ArrowDown: selectedCell + 3,
+        ArrowUp: selectedCell - GRID_COLUMNS,
+        ArrowDown: selectedCell + GRID_COLUMNS,
         ArrowLeft: selectedCell - 1,
         ArrowRight: selectedCell + 1,
     };
@@ -204,7 +202,7 @@ document.addEventListener("keydown", (event) => {
         const staysInBoard = nextCell >= 0 && nextCell < cells.length;
         const staysInRow =
             !["ArrowLeft", "ArrowRight"].includes(event.key) ||
-            Math.floor(nextCell / 3) === Math.floor(selectedCell / 3);
+            Math.floor(nextCell / GRID_COLUMNS) === Math.floor(selectedCell / GRID_COLUMNS);
         if (staysInBoard && staysInRow) cells[nextCell].focus();
         return;
     }
