@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark">
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -31,17 +31,7 @@
 
         <div class="board-wrap">
           <div class="board-topline"><span>SECTOR GRID</span><span id="game-hint">STANDBY</span></div>
-          <div class="board" id="board" role="group" aria-label="Bug hunt grid">
-            <button class="cell" type="button" data-cell="0" aria-label="Row 1, column 1" disabled><span class="cell-index">01</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="1" aria-label="Row 1, column 2" disabled><span class="cell-index">02</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="2" aria-label="Row 1, column 3" disabled><span class="cell-index">03</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="3" aria-label="Row 2, column 1" disabled><span class="cell-index">04</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="4" aria-label="Row 2, column 2" disabled><span class="cell-index">05</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="5" aria-label="Row 2, column 3" disabled><span class="cell-index">06</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="6" aria-label="Row 3, column 1" disabled><span class="cell-index">07</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="7" aria-label="Row 3, column 2" disabled><span class="cell-index">08</span><span class="cell-content" aria-hidden="true"></span></button>
-            <button class="cell" type="button" data-cell="8" aria-label="Row 3, column 3" disabled><span class="cell-index">09</span><span class="cell-content" aria-hidden="true"></span></button>
-          </div>
+          <div class="board" id="board" role="group" aria-label="Bug hunt grid" aria-describedby="game-rules"></div>
           <p class="sr-only" id="announcer" aria-live="polite" aria-atomic="true"></p>
         </div>
 
@@ -49,6 +39,7 @@
           <div class="instructions"><span class="keycap">↑</span><span class="keycap">↓</span><span class="keycap">←</span><span class="keycap">→</span><span class="key-plus">+</span><span class="keycap keycap-wide">ENTER</span><span class="instruction-copy">to catch</span></div>
           <button class="start-button" id="start-button" type="button"><span class="button-label">START GAME</span></button>
         </div>
+        <p class="game-rules" id="game-rules">Keyboard only · Bugs move faster every 5 catches. Press D to switch themes.</p>
         <p class="result" id="result" role="status" hidden></p>
       </section>
 

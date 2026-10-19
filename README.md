@@ -5,7 +5,19 @@ Misión M1 · El Despertar del DOM — Web Development I.
 ## Usage
 
 Press **Start Game** to play. Use the arrows to move to a different cell and **Enter** or **Space**
-to catch the bug.
+to catch the bug. Open `index.html` directly in a browser; no installation or build step is needed.
+
+The grid is intentionally **keyboard only**. Mouse and touch can start or restart the game, but
+cannot select cells or catch bugs. Tab moves focus out of the board normally.
+
+Each game lasts **30 seconds**. A catch earns 1 point, a wrong box costs 1 point and 2 seconds.
+Every five successful catches advances the round, even if misses have reduced your score. Bugs move
+automatically every 4 seconds at first, then 400 milliseconds faster per round, down to a minimum of
+1.2 seconds. Each catch resets the movement timer, and the next bug always appears in a different
+cell.
+
+Press **D** to toggle dark and light themes before, during, or after a game. reloading the page
+resets the theme.
 
 ## Use of AI
 
